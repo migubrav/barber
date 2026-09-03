@@ -1,0 +1,13 @@
+{
+  "name": "Panel Barbería",
+  "short_name": "Barbería",
+  "description": "Panel de gestión de agenda y cola para la barbería",
+  "start_url": "panel.html",
+  "display": "standalone",
+  "background_color": "#1a1410",
+  "theme_color": "#1a1410",
+  "orientation": "portrait",
+  "icons": [
+    { "src": "icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any maskable" }
+  ]
+}

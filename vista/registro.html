@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Regístrate · Barbería</title>
+<link rel="stylesheet" href="../estilos.css">
+</head>
+<body class="pagina-registro">
+<div class="wrap-registro">
+  <div class="pole-centrado"></div>
+  <h1>¡Bienvenido! 💈</h1>
+  <p class="sub">Regístrate para recibir tu recordatorio de corte</p>
+
+  <form id="form-registro">
+    <label>Tu nombre</label>
+    <input type="text" id="nombre" required placeholder="Ej: Carlos Muñoz" />
+
+    <label>Tu WhatsApp</label>
+    <input type="tel" id="telefono" required placeholder="+56 9 1234 5678" />
+
+    <label>¿Cada cuánto te cortas el pelo?</label>
+    <select id="frecuencia">
+      <option value="7">Cada semana</option>
+      <option value="14" selected>Cada 2 semanas</option>
+      <option value="21">Cada 3 semanas</option>
+      <option value="30">Cada mes</option>
+      <option value="60">Cada 2 meses</option>
+    </select>
+
+    <button type="submit" id="btn-submit">Registrarme</button>
+  </form>
+
+  <div class="msg" id="msg-ok">✅ ¡Listo! Te avisaremos por WhatsApp cuando te toque tu próximo corte.</div>
+  <div class="msg error" id="msg-error"></div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script src="../conexion_db.js"></script>
+<script src="VistaRegistro.js"></script>
+<script>
+  const conexionDB = ConexionDB.obtenerInstancia();
+  const vistaRegistro = new VistaRegistro(conexionDB);
+  vistaRegistro.inicializarFormulario();
+</script>
+</body>
+</html>

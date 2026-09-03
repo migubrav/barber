@@ -1,0 +1,137 @@
+:root{
+  --ink:#1a1410;
+  --panel:#221b15;
+  --panel-2:#2c2118;
+  --line:#3a2d20;
+  --gold:#c8952f;
+  --gold-bright:#e8b04e;
+  --cream:#f2e9d8;
+  --muted:#a99b84;
+  --ok:#5a8a5a;
+  --warn:#c8952f;
+  --danger:#a85040;
+  --radius:14px;
+  font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
+}
+*{box-sizing:border-box;}
+body{
+  margin:0; background:var(--ink); color:var(--cream);
+  min-height:100vh; padding-bottom:84px;
+}
+
+/* ---------- Layout general (panel del barbero) ---------- */
+header{
+  padding:20px 18px 14px; position:sticky; top:0; z-index:10;
+  background:linear-gradient(180deg,var(--ink) 70%,transparent);
+}
+.brand{display:flex; align-items:center; gap:10px;}
+.pole{width:8px;height:34px;border-radius:4px;background:repeating-linear-gradient(45deg,var(--gold-bright) 0 6px,#a83b3b 6px 12px,var(--cream) 12px 18px);}
+h1{font-size:19px; margin:0; font-weight:700; letter-spacing:.2px;}
+.sub{color:var(--muted); font-size:13px; margin-top:2px;}
+main{padding:0 14px;}
+section{margin-bottom:22px;}
+h2{font-size:13px; text-transform:uppercase; letter-spacing:1.2px; color:var(--gold-bright); margin:0 0 10px 2px; font-weight:700;}
+
+/* ---------- Tarjetas y estadísticas ---------- */
+.card{
+  background:var(--panel); border:1px solid var(--line); border-radius:var(--radius);
+  padding:14px; margin-bottom:10px;
+}
+.stat-row{display:flex; gap:10px;}
+.stat{flex:1; background:var(--panel); border:1px solid var(--line); border-radius:var(--radius); padding:14px; text-align:center;}
+.stat .n{font-size:26px; font-weight:800; color:var(--gold-bright); line-height:1;}
+.stat .l{font-size:11px; color:var(--muted); margin-top:5px; text-transform:uppercase; letter-spacing:.5px;}
+
+/* ---------- Filas de agenda / cola ---------- */
+.slot{display:flex; align-items:center; justify-content:space-between; gap:10px;}
+.slot .time{font-weight:700; font-size:15px; min-width:52px;}
+.slot .name{flex:1; font-size:14px;}
+.badge{font-size:11px; padding:3px 9px; border-radius:20px; font-weight:700; text-transform:uppercase; letter-spacing:.3px;}
+.badge.confirmada{background:rgba(90,138,90,.2); color:#8fd08f;}
+.badge.tolerancia{background:rgba(200,149,47,.2); color:var(--gold-bright);}
+.badge.libre{background:rgba(169,155,132,.15); color:var(--muted);}
+.badge.no_show{background:rgba(168,80,64,.2); color:#e08a78;}
+.empty{color:var(--muted); font-size:13px; text-align:center; padding:20px 10px;}
+
+/* ---------- Botones ---------- */
+.fab-row{display:flex; gap:10px; margin-top:4px;}
+.btn{
+  flex:1; border:none; border-radius:12px; padding:14px 10px; font-size:14px; font-weight:700;
+  display:flex; align-items:center; justify-content:center; gap:6px; cursor:pointer;
+}
+.btn-primary{background:var(--gold-bright); color:#1a1410;}
+.btn-outline{background:transparent; border:1.5px solid var(--line); color:var(--cream);}
+.btn-danger{background:transparent; border:1.5px solid rgba(168,80,64,.5); color:#e08a78;}
+
+/* ---------- Navegación inferior ---------- */
+nav.tabs{
+  position:fixed; bottom:0; left:0; right:0; background:var(--panel-2);
+  border-top:1px solid var(--line); display:flex; padding:8px 6px calc(8px + env(safe-area-inset-bottom));
+  z-index:20;
+}
+nav.tabs button{
+  flex:1; background:none; border:none; color:var(--muted); font-size:11px; font-weight:600;
+  display:flex; flex-direction:column; align-items:center; gap:4px; padding:6px 0; cursor:pointer;
+}
+nav.tabs button.active{color:var(--gold-bright);}
+nav.tabs .ic{font-size:19px;}
+.view{display:none;}
+.view.active{display:block;}
+
+/* ---------- Configuración ---------- */
+.cfg-row{display:flex; align-items:center; justify-content:space-between; padding:10px 0; border-bottom:1px solid var(--line);}
+.cfg-row:last-child{border-bottom:none;}
+.cfg-row label{font-size:13px;}
+.cfg-row input{width:70px; background:var(--panel-2); border:1px solid var(--line); color:var(--cream); border-radius:8px; padding:6px 8px; text-align:center; font-size:14px;}
+
+/* ---------- Elementos varios ---------- */
+.install-banner{background:var(--panel); border:1px dashed var(--gold); border-radius:var(--radius); padding:12px 14px; font-size:13px; color:var(--muted); margin-bottom:16px; display:none;}
+.toast{
+  position:fixed; bottom:90px; left:16px; right:16px; background:var(--gold-bright); color:#1a1410;
+  padding:12px 16px; border-radius:12px; font-size:13px; font-weight:600; text-align:center;
+  z-index:30; display:none;
+}
+.qr-link{font-size:12px; color:var(--gold-bright); word-break:break-all;}
+
+/* ---------- Registro múltiple de clientes de prueba (panel) ---------- */
+.fila-registro{position:relative; padding-top:6px;}
+.fila-registro + .fila-registro{margin-top:16px; padding-top:18px; border-top:1px solid var(--line);}
+.fila-registro label{display:block; font-size:12px; color:var(--muted); margin:10px 0 5px;}
+.fila-registro label:first-child{margin-top:0;}
+.fila-registro input, .fila-registro select{
+  width:100%; background:var(--panel-2); border:1px solid var(--line); color:var(--cream);
+  border-radius:10px; padding:11px 12px; font-size:14px;
+}
+.fila-registro .quitar{
+  position:absolute; top:0; right:0; background:none; border:none; color:var(--danger);
+  font-size:12px; font-weight:700; cursor:pointer; padding:4px;
+}
+
+/* ---------- Página de registro (cliente) ---------- */
+.wrap-registro{max-width:400px; width:100%; margin:0 auto;}
+body.pagina-registro{display:flex; align-items:center; justify-content:center; padding:24px;}
+.wrap-registro h1{text-align:center; font-size:22px; margin:0 0 4px;}
+.wrap-registro p.sub{text-align:center; color:var(--muted); font-size:14px; margin:0 0 26px;}
+.wrap-registro label{display:block; font-size:13px; color:var(--muted); margin:16px 0 6px;}
+.wrap-registro input, .wrap-registro select{
+  width:100%; background:var(--panel); border:1px solid var(--line); color:var(--cream);
+  border-radius:10px; padding:13px 14px; font-size:15px;
+}
+.wrap-registro button{
+  width:100%; margin-top:24px; background:var(--gold-bright); color:#1a1410; border:none;
+  border-radius:12px; padding:15px; font-size:15px; font-weight:700; cursor:pointer;
+}
+.wrap-registro button:disabled{opacity:.6;}
+.msg{text-align:center; margin-top:16px; font-size:14px; color:var(--gold-bright); display:none;}
+.msg.error{color:#e08a78;}
+
+/* ---------- Grilla de horarios disponibles (reservar.html) ---------- */
+.grid-horas{display:grid; grid-template-columns:repeat(3, 1fr); gap:8px; margin-top:8px;}
+.grid-horas .empty{grid-column:1 / -1;}
+.hora-btn{
+  background:var(--panel); border:1px solid var(--line); color:var(--cream);
+  border-radius:10px; padding:12px 6px; font-size:14px; font-weight:700; cursor:pointer; text-align:center;
+}
+.hora-btn:hover{border-color:var(--gold-bright);}
+.hora-btn.ocupada{opacity:.35; cursor:not-allowed; text-decoration:line-through;}
+.pole-centrado{width:8px;height:38px;border-radius:4px;background:repeating-linear-gradient(45deg,var(--gold-bright) 0 6px,#a83b3b 6px 12px,var(--cream) 12px 18px); margin:0 auto 14px;}

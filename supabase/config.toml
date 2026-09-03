@@ -1,0 +1,10 @@
+project_id = "vpqwrbilrgxisdgirpph"
+
+[functions.enviar-whatsapp]
+verify_jwt = false
+
+[functions.whatsapp-webhook]
+verify_jwt = false
+
+[functions.enviar-recordatorios]
+verify_jwt = false

@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Servicios - Barbería Premium</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Work+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        @font-face {
+            font-family: 'The Foregen';
+            src: url('assets/fonts/The_Foregen_Regular.otf') format('opentype');
+            font-weight: normal;
+            font-style: normal;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Work Sans', sans-serif;
+            background-color: #FDD886;
+            color: #fff;
+            overflow-x: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 40px 20px;
+        }
+
+        .main-container {
+            width: 100%;
+            max-width: 1200px;
+            background: rgba(0, 0, 0, 0.95);
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        }
+
+        header {
+            position: relative;
+            z-index: 100;
+            background: rgba(0, 0, 0, 0.95);
+            padding: 20px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid rgba(255, 215, 0, 0.2);
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: normal;
+            color: #FFD700;
+            font-family: 'The Foregen', sans-serif;
+            letter-spacing: 2px;
+        }
+
+        nav {
+            display: flex;
+            gap: 40px;
+            align-items: center;
+        }
+
+        nav a {
+            color: #fff;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 500;
+            transition: color 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-family: 'The Foregen', sans-serif;
+        }
+
+        nav a:hover,
+        nav a.active {
+            color: #D4AF77;
+        }
+
+        .content {
+            padding: 60px 40px;
+        }
+
+        .page-title {
+            font-family: 'The Foregen', sans-serif;
+            font-size: 56px;
+            font-weight: 400;
+            line-height: 1.1;
+            margin-bottom: 15px;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+            color: #fff;
+        }
+
+        .page-title .highlight {
+            color: #D4AF77;
+        }
+
+        .page-subtitle {
+            font-size: 18px;
+            font-weight: 400;
+            margin-bottom: 60px;
+            color: #ddd;
+            line-height: 1.6;
+            max-width: 600px;
+        }
+
+        .services-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 30px;
+        }
+
+        .service-card {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(212, 175, 119, 0.3);
+            border-radius: 12px;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .service-card:hover {
+            background: rgba(255, 255, 255, 0.08);
+            border-color: rgba(212, 175, 119, 0.6);
+            transform: translateY(-5px);
+        }
+
+        .service-image {
+            width: 100%;
+            height: 250px;
+            background: linear-gradient(135deg, rgba(212, 175, 119, 0.2), rgba(0, 0, 0, 0.3));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        .service-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .service-content {
+            padding: 30px;
+        }
+
+        .service-name {
+            font-family: 'The Foregen', sans-serif;
+            font-size: 22px;
+            margin-bottom: 15px;
+            color: #D4AF77;
+            font-weight: 400;
+            letter-spacing: 1px;
+        }
+
+        .service-description {
+            color: #ccc;
+            margin-bottom: 20px;
+            line-height: 1.6;
+            font-size: 15px;
+        }
+
+        .service-price {
+            font-size: 18px;
+            color: #D4AF77;
+            font-weight: 600;
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 20px 10px;
+            }
+
+            header {
+                padding: 15px 20px;
+                flex-direction: column;
+                gap: 15px;
+            }
+
+            nav {
+                gap: 15px;
+                font-size: 12px;
+            }
+
+            nav a {
+                font-size: 11px;
+            }
+
+            .content {
+                padding: 40px 20px;
+            }
+
+            .page-title {
+                font-size: 36px;
+            }
+
+            .services-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 480px) {
+            body {
+                padding: 15px 10px;
+            }
+
+            header {
+                padding: 12px 15px;
+            }
+
+            .content {
+                padding: 30px 15px;
+            }
+
+            .page-title {
+                font-size: 28px;
+            }
+
+            .page-subtitle {
+                font-size: 14px;
+            }
+
+            .service-card {
+                border-radius: 8px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="main-container">
+        <!-- HEADER -->
+        <header>
+            <div class="logo">⚜ BARBERÍA</div>
+            <nav>
+                <a href="index.html">Inicio</a>
+                <a href="servicios.html" class="active">Servicios</a>
+                <a href="nosotros.html">Nosotros</a>
+                <a href="index.html#contacto">Ubicación</a>
+            </nav>
+        </header>
+
+        <!-- CONTENIDO -->
+        <section class="content">
+            <h1 class="page-title">Nuestros <span class="highlight">Servicios</span></h1>
+            <p class="page-subtitle">Ofrecemos una amplia gama de servicios de barbería profesional con los mejores estándares de calidad y maestría.</p>
+
+            <div class="services-grid">
+                <!-- SERVICIO 1: CORTE TRADICIONAL -->
+                <div class="service-card">
+                    <div class="service-image">
+                        <img src="assets/img/servicio1.png" alt="Corte Tradicional">
+                    </div>
+                    <div class="service-content">
+                        <h3 class="service-name">Corte Tradicional</h3>
+                        <p class="service-description">Corte clásico con técnicas profesionales y precisión en cada detalle.</p>
+                        <p class="service-price">$25.000</p>
+                    </div>
+                </div>
+
+                <!-- SERVICIO 2: ESCALONADO -->
+                <div class="service-card">
+                    <div class="service-image">
+                        <img src="assets/img/servicio2.png" alt="Corte Escalonado">
+                    </div>
+                    <div class="service-content">
+                        <h3 class="service-name">Escalonado</h3>
+                        <p class="service-description">Corte moderno con capas escalonadas para un look fresco y dinámico.</p>
+                        <p class="service-price">$30.000</p>
+                    </div>
+                </div>
+
+                <!-- SERVICIO 3: PERFILADOS -->
+                <div class="service-card">
+                    <div class="service-image">
+                        <img src="assets/img/servicio3.png" alt="Perfilados">
+                    </div>
+                    <div class="service-content">
+                        <h3 class="service-name">Perfilados</h3>
+                        <p class="service-description">Perfilado preciso de líneas y contornos para un acabado impecable.</p>
+                        <p class="service-price">$20.000</p>
+                    </div>
+                </div>
+
+                <!-- SERVICIO 4: BARBA -->
+                <div class="service-card">
+                    <div class="service-image">
+                        <img src="assets/img/servicio1.png" alt="Arreglo de Barba">
+                    </div>
+                    <div class="service-content">
+                        <h3 class="service-name">Arreglo de Barba</h3>
+                        <p class="service-description">Arreglo, perfilado y mantenimiento completo de barba con productos premium.</p>
+                        <p class="service-price">$18.000</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+</body>
+</html>

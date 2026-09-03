@@ -1,0 +1,13 @@
+{
+  "name": "Barbería Premium",
+  "short_name": "Barbería",
+  "description": "Reserva tu hora en Barbería Premium desde tu celular",
+  "start_url": "vista/reservar.html",
+  "scope": ".",
+  "display": "standalone",
+  "background_color": "#FDD886",
+  "theme_color": "#000000",
+  "icons": [
+    { "src": "vista/icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any maskable" }
+  ]
+}

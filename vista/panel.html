@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Barbería · Panel</title>
+<link rel="manifest" href="manifest.json">
+<link rel="stylesheet" href="../estilos.css">
+<meta name="theme-color" content="#1a1410">
+</head>
+<body>
+
+<header>
+  <div class="brand">
+    <div class="pole"></div>
+    <div>
+      <h1>Panel del barbero</h1>
+      <div class="sub" id="fecha-hoy">—</div>
+    </div>
+  </div>
+</header>
+
+<main>
+
+<div class="install-banner" id="install-banner">
+  📲 Toca el menú del navegador → "Agregar a pantalla de inicio" para instalar este panel como app.
+</div>
+
+<!-- VISTA: AGENDA -->
+<div class="view active" id="view-agenda">
+  <section>
+    <div class="stat-row">
+      <div class="stat"><div class="n" id="n-espera">0</div><div class="l">En espera</div></div>
+      <div class="stat"><div class="n" id="n-hoy">0</div><div class="l">Reservas hoy</div></div>
+      <div class="stat"><div class="n" id="n-eta">0m</div><div class="l">Espera est.</div></div>
+    </div>
+  </section>
+
+  <section>
+    <h2>Agenda de hoy</h2>
+    <div class="card" id="agenda-list">
+      <div class="empty">Cargando agenda…</div>
+    </div>
+    <div class="fab-row">
+      <button class="btn btn-primary" onclick="agregarWalkIn()">＋ Agregar walk-in</button>
+    </div>
+  </section>
+</div>
+
+<!-- VISTA: REGISTRO -->
+<div class="view" id="view-registro">
+  <section>
+    <h2>Código QR de registro</h2>
+    <div class="card">
+      <p style="font-size:13px;color:var(--muted);margin-top:0;">
+        Los clientes escanean este código para registrarse la primera vez (nombre, WhatsApp y frecuencia de corte).
+      </p>
+      <div class="qr-link" id="registro-link">cargando…</div>
+    </div>
+  </section>
+
+  <section>
+    <h2>Registrar clientes de prueba</h2>
+    <div class="card">
+      <p style="font-size:13px;color:var(--muted);margin-top:0;">
+        Carga varios clientes de una vez para ir probando el sistema.
+      </p>
+      <div id="filas-registro"></div>
+    </div>
+    <div class="fab-row">
+      <button class="btn btn-outline" onclick="agregarFilaRegistro()">＋ Agregar otro cliente</button>
+      <button class="btn btn-primary" onclick="guardarClientesRegistro()">Guardar todos</button>
+    </div>
+    <div class="card" id="card-resultado-registro" style="display:none;">
+      <p style="font-size:12px;color:var(--muted);margin:0 0 8px;text-transform:uppercase;letter-spacing:.5px;">Guardados en la base de datos ✓</p>
+      <div id="resultado-registro"></div>
+    </div>
+  </section>
+</div>
+
+<!-- VISTA: CONFIG -->
+<div class="view" id="view-config">
+  <section>
+    <h2>Configuración</h2>
+    <div class="card">
+      <div class="cfg-row">
+        <label>Duración por corte (min)</label>
+        <input type="number" id="cfg-duracion" />
+      </div>
+      <div class="cfg-row">
+        <label>Tolerancia de reserva (min)</label>
+        <input type="number" id="cfg-tolerancia" />
+      </div>
+      <div class="cfg-row">
+        <label>Radio de aviso (km)</label>
+        <input type="number" id="cfg-radio" />
+      </div>
+    </div>
+    <div class="fab-row">
+      <button class="btn btn-primary" onclick="guardarConfig()">Guardar cambios</button>
+    </div>
+  </section>
+
+  <section>
+    <h2>Barberos</h2>
+    <div class="card" id="lista-barberos">
+      <div class="empty">Cargando barberos…</div>
+    </div>
+    <div class="card" id="card-form-barbero">
+      <div class="fila-registro">
+        <label>Nombre</label>
+        <input type="text" id="nuevo-barbero-nombre" placeholder="Ej: Juan Pérez" />
+        <label>Apertura</label>
+        <input type="time" id="nuevo-barbero-apertura" value="10:00" />
+        <label>Cierre</label>
+        <input type="time" id="nuevo-barbero-cierre" value="20:00" />
+        <label style="display:flex;align-items:center;gap:8px;margin-top:14px;">
+          <input type="checkbox" id="nuevo-barbero-activo" checked style="width:auto;" />
+          <span style="font-size:13px;color:var(--cream);">Activo</span>
+        </label>
+      </div>
+    </div>
+    <div class="fab-row">
+      <button class="btn btn-outline" id="btn-cancelar-barbero" style="display:none;" onclick="cancelarEdicionBarbero()">Cancelar</button>
+      <button class="btn btn-primary" id="btn-guardar-barbero" onclick="agregarBarbero()">＋ Agregar barbero</button>
+    </div>
+  </section>
+</div>
+
+</main>
+
+<div class="toast" id="toast"></div>
+
+<nav class="tabs">
+  <button class="active" data-view="agenda" onclick="cambiarVista('agenda')"><span class="ic">📅</span>Agenda</button>
+  <button data-view="registro" onclick="cambiarVista('registro')"><span class="ic">🔗</span>Registro</button>
+  <button data-view="config" onclick="cambiarVista('config')"><span class="ic">⚙️</span>Config</button>
+</nav>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script src="../conexion_db.js"></script>
+<script src="VistaAgenda.js"></script>
+<script src="VistaConfig.js"></script>
+<script src="VistaBarberos.js"></script>
+<script src="VistaRegistro.js"></script>
+<script src="../app.js"></script>
+</body>
+</html>

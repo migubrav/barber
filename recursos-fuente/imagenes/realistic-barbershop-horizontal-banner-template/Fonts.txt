@@ -1,0 +1,13 @@
+Fonts used in this design:
+
+Font: Montserrat
+Author: Julieta Ulanovsky,Sol Matas,Juan Pablo del Peral,Jacques Le Bailly
+Url: https://fonts.google.com/specimen/Montserrat
+
+Font: Abril Fatface
+Author: TypeTogether
+Url: https://fonts.google.com/specimen/Abril+Fatface
+
+Font: Hurricane
+Author: Robert Leuschke
+Url: https://fonts.google.com/specimen/Hurricane
