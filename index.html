@@ -582,6 +582,86 @@
                 height: 300px;
             }
         }
+
+        /* EQUIPO */
+        .team-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 30px;
+        }
+
+        .team-member {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(212, 175, 119, 0.3);
+            border-radius: 12px;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .team-member:hover {
+            background: rgba(255, 255, 255, 0.08);
+            border-color: rgba(212, 175, 119, 0.6);
+            transform: translateY(-5px);
+        }
+
+        .member-image {
+            width: 100%;
+            height: 250px;
+            background: linear-gradient(135deg, rgba(212, 175, 119, 0.2), rgba(0, 0, 0, 0.3));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        .member-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .member-content {
+            padding: 20px;
+            text-align: center;
+        }
+
+        .member-name {
+            font-family: 'The Foregen', sans-serif;
+            font-size: 20px;
+            margin-bottom: 8px;
+            color: #D4AF77;
+            font-weight: 400;
+            letter-spacing: 1px;
+        }
+
+        .member-role {
+            font-size: 13px;
+            color: #999;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 12px;
+        }
+
+        .member-description {
+            color: #ccc;
+            margin-bottom: 12px;
+            line-height: 1.5;
+            font-size: 14px;
+        }
+
+        .member-experience {
+            font-size: 13px;
+            color: #D4AF77;
+            font-weight: 600;
+        }
+
+        @media (max-width: 768px) {
+            .team-grid {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+        }
     </style>
 </head>
 <body>
@@ -621,7 +701,7 @@
                     <div class="carousel-content">
                         <h1 class="carousel-headline">Experiencia <span class="highlight">Profesional</span></h1>
                         <p class="carousel-subtitle">Nuestros barberos tienen años de experiencia perfeccionando el arte del corte.</p>
-                        <a href="equipo.html" class="cta-button">Conocer al Equipo</a>
+                        <button class="cta-button" onclick="mostrarPanel('panel-equipo', event)">Conocer al Equipo</button>
                     </div>
                 </div>
 
@@ -702,6 +782,49 @@
                 Desde 1972, Barbería Premium combina técnicas clásicas con las tendencias modernas. Nuestro equipo de barberos profesionales está dedicado a ofrecerte una experiencia de cuidado personal única, con atención al detalle en cada corte.
                 <em>(Texto de ejemplo — reemplázalo con la historia real de la barbería.)</em>
             </p>
+        </section>
+
+        <!-- EQUIPO (se muestra al hacer clic en "Conocer al Equipo") -->
+        <section class="info-panel" id="panel-equipo">
+            <h2 class="panel-title">Conoce Nuestro <span class="highlight">Equipo</span></h2>
+            <p class="panel-subtitle">Maestros barberos con años de experiencia dedicados a ofrecerte los mejores servicios con profesionalismo y estilo.</p>
+            <div class="team-grid">
+                <div class="team-member">
+                    <div class="member-image">
+                        <img src="assets/img/barber1.jpg" alt="Maestro Barbero">
+                    </div>
+                    <div class="member-content">
+                        <h3 class="member-name">Nombre</h3>
+                        <p class="member-role">Maestro Barbero</p>
+                        <p class="member-description">Especialista en cortes tradicionales y diseños personalizados con atención al detalle.</p>
+                        <p class="member-experience">+10 años de experiencia</p>
+                    </div>
+                </div>
+
+                <div class="team-member">
+                    <div class="member-image">
+                        <img src="assets/img/barber2.jpg" alt="Maestro Barbero">
+                    </div>
+                    <div class="member-content">
+                        <h3 class="member-name">Nombre</h3>
+                        <p class="member-role">Maestro Barbero</p>
+                        <p class="member-description">Experto en técnicas modernas, diseños de barba y estilos contemporáneos.</p>
+                        <p class="member-experience">+8 años de experiencia</p>
+                    </div>
+                </div>
+
+                <div class="team-member">
+                    <div class="member-image">
+                        <img src="assets/img/barber3.jpg" alt="Maestro Barbero">
+                    </div>
+                    <div class="member-content">
+                        <h3 class="member-name">Nombre</h3>
+                        <p class="member-role">Maestro Barbero</p>
+                        <p class="member-description">Especialista en perfilados precisos y acabados impecables para cada cliente.</p>
+                        <p class="member-experience">+6 años de experiencia</p>
+                    </div>
+                </div>
+            </div>
         </section>
 
         <!-- UBICACIÓN -->
