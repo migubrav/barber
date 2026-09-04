@@ -119,6 +119,41 @@
             color: #D4AF77;
         }
 
+        /* BOTÓN HAMBURGUESA (solo aparece en mobile) */
+        .nav-toggle {
+            display: none;
+            flex-direction: column;
+            justify-content: center;
+            gap: 5px;
+            width: 30px;
+            height: 24px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 0;
+        }
+
+        .nav-toggle span {
+            display: block;
+            width: 100%;
+            height: 2px;
+            background: #FFD700;
+            border-radius: 2px;
+            transition: transform 0.25s ease, opacity 0.25s ease;
+        }
+
+        .nav-toggle.activo span:nth-child(1) {
+            transform: translateY(7px) rotate(45deg);
+        }
+
+        .nav-toggle.activo span:nth-child(2) {
+            opacity: 0;
+        }
+
+        .nav-toggle.activo span:nth-child(3) {
+            transform: translateY(-7px) rotate(-45deg);
+        }
+
         /* HERO CARRUSEL */
         .hero-container {
             position: relative;
@@ -292,14 +327,32 @@
 
             header {
                 padding: 15px 20px;
+                flex-wrap: wrap;
+            }
+
+            .nav-toggle {
+                display: flex;
             }
 
             nav {
-                gap: 20px;
+                flex-basis: 100%;
+                flex-direction: column;
+                align-items: stretch;
+                gap: 0;
+                max-height: 0;
+                overflow: hidden;
+                transition: max-height 0.3s ease;
+            }
+
+            nav.abierto {
+                max-height: 300px;
+                margin-top: 15px;
             }
 
             nav a {
-                font-size: 12px;
+                padding: 12px 4px;
+                font-size: 14px;
+                border-top: 1px solid rgba(255, 215, 0, 0.1);
             }
 
             .logo {
@@ -319,6 +372,10 @@
             .carousel-headline {
                 font-size: 48px;
                 letter-spacing: 1px;
+            }
+
+            .carousel-subtitle {
+                margin-bottom: 25px;
             }
 
             .carousel-subtitle {
@@ -366,14 +423,7 @@
 
             .carousel-subtitle {
                 font-size: 14px;
-            }
-
-            nav {
-                gap: 10px;
-            }
-
-            nav a {
-                font-size: 10px;
+                margin-bottom: 15px;
             }
         }
 
@@ -541,7 +591,10 @@
         <!-- HEADER DENTRO DEL CONTENEDOR -->
         <header>
             <div class="logo">⚜ BARBERÍA</div>
-            <nav>
+            <button class="nav-toggle" id="nav-toggle" aria-label="Abrir menú" aria-expanded="false" aria-controls="nav-menu">
+                <span></span><span></span><span></span>
+            </button>
+            <nav id="nav-menu">
                 <a href="#inicio" onclick="mostrarPanel(null, event)">Inicio</a>
                 <a href="#servicios" data-panel="panel-servicios" onclick="mostrarPanel('panel-servicios', event)">Servicios</a>
                 <a href="#nosotros" data-panel="panel-nosotros" onclick="mostrarPanel('panel-nosotros', event)">Nosotros</a>
@@ -735,9 +788,30 @@
                 link.classList.toggle('active', link.dataset.panel === idPanel);
             });
 
+            cerrarMenuMobile();
+
             const destino = idPanel ? document.getElementById(idPanel) : document.querySelector('.hero-container');
             if (destino) destino.scrollIntoView({ behavior: 'smooth', block: 'start' });
         }
+
+        // ---------- Menú hamburguesa (mobile) ----------
+        const navToggle = document.getElementById('nav-toggle');
+        const navMenu = document.getElementById('nav-menu');
+
+        function cerrarMenuMobile() {
+            navMenu.classList.remove('abierto');
+            navToggle.classList.remove('activo');
+            navToggle.setAttribute('aria-expanded', 'false');
+        }
+
+        navToggle.addEventListener('click', () => {
+            const abierto = navMenu.classList.toggle('abierto');
+            navToggle.classList.toggle('activo', abierto);
+            navToggle.setAttribute('aria-expanded', abierto ? 'true' : 'false');
+        });
+
+        // El link "Ubicación" no pasa por mostrarPanel(), así que cierra el menú aparte
+        document.querySelector('nav a[href="#contacto"]').addEventListener('click', cerrarMenuMobile);
     </script>
 
     <script>
