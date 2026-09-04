@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Equipo - Barbería Premium</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Work+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        @font-face {
+            font-family: 'The Foregen';
+            src: url('assets/fonts/The_Foregen_Regular.otf') format('opentype');
+            font-weight: normal;
+            font-style: normal;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Work Sans', sans-serif;
+            background-color: #FDD886;
+            color: #fff;
+            overflow-x: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 40px 20px;
+        }
+
+        .main-container {
+            width: 100%;
+            max-width: 1200px;
+            background: rgba(0, 0, 0, 0.95);
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        }
+
+        header {
+            position: relative;
+            z-index: 100;
+            background: rgba(0, 0, 0, 0.95);
+            padding: 20px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid rgba(255, 215, 0, 0.2);
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: normal;
+            color: #FFD700;
+            font-family: 'The Foregen', sans-serif;
+            letter-spacing: 2px;
+        }
+
+        nav {
+            display: flex;
+            gap: 40px;
+            align-items: center;
+        }
+
+        nav a {
+            color: #fff;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 500;
+            transition: color 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-family: 'The Foregen', sans-serif;
+        }
+
+        nav a:hover,
+        nav a.active {
+            color: #D4AF77;
+        }
+
+        .content {
+            padding: 60px 40px;
+        }
+
+        .page-title {
+            font-family: 'The Foregen', sans-serif;
+            font-size: 56px;
+            font-weight: 400;
+            line-height: 1.1;
+            margin-bottom: 15px;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+            color: #fff;
+        }
+
+        .page-title .highlight {
+            color: #D4AF77;
+        }
+
+        .page-subtitle {
+            font-size: 18px;
+            font-weight: 400;
+            margin-bottom: 60px;
+            color: #ddd;
+            line-height: 1.6;
+            max-width: 600px;
+        }
+
+        .team-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 40px;
+        }
+
+        .team-member {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(212, 175, 119, 0.3);
+            border-radius: 12px;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .team-member:hover {
+            background: rgba(255, 255, 255, 0.08);
+            border-color: rgba(212, 175, 119, 0.6);
+            transform: translateY(-5px);
+        }
+
+        .member-image {
+            width: 100%;
+            height: 300px;
+            background: linear-gradient(135deg, rgba(212, 175, 119, 0.2), rgba(0, 0, 0, 0.3));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        .member-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .member-content {
+            padding: 30px;
+            text-align: center;
+        }
+
+        .member-name {
+            font-family: 'The Foregen', sans-serif;
+            font-size: 24px;
+            margin-bottom: 10px;
+            color: #D4AF77;
+            font-weight: 400;
+            letter-spacing: 1px;
+        }
+
+        .member-role {
+            font-size: 14px;
+            color: #999;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 15px;
+        }
+
+        .member-description {
+            color: #ccc;
+            margin-bottom: 20px;
+            line-height: 1.6;
+            font-size: 15px;
+        }
+
+        .member-experience {
+            font-size: 13px;
+            color: #D4AF77;
+            font-weight: 600;
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 20px 10px;
+            }
+
+            header {
+                padding: 15px 20px;
+                flex-direction: column;
+                gap: 15px;
+            }
+
+            nav {
+                gap: 15px;
+                font-size: 12px;
+            }
+
+            nav a {
+                font-size: 11px;
+            }
+
+            .content {
+                padding: 40px 20px;
+            }
+
+            .page-title {
+                font-size: 36px;
+            }
+
+            .team-grid {
+                grid-template-columns: 1fr;
+                gap: 30px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            body {
+                padding: 15px 10px;
+            }
+
+            header {
+                padding: 12px 15px;
+            }
+
+            .content {
+                padding: 30px 15px;
+            }
+
+            .page-title {
+                font-size: 28px;
+            }
+
+            .page-subtitle {
+                font-size: 14px;
+            }
+
+            .team-member {
+                border-radius: 8px;
+            }
+
+            .member-image {
+                height: 250px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="main-container">
+        <!-- HEADER -->
+        <header>
+            <div class="logo">⚜ BARBERÍA</div>
+            <nav>
+                <a href="index.html">Inicio</a>
+                <a href="servicios.html">Servicios</a>
+                <a href="equipo.html" class="active">Equipo</a>
+                <a href="index.html#contacto">Ubicación</a>
+            </nav>
+        </header>
+
+        <!-- CONTENIDO -->
+        <section class="content">
+            <h1 class="page-title">Conoce Nuestro <span class="highlight">Equipo</span></h1>
+            <p class="page-subtitle">Maestros barberos con años de experiencia dedicados a ofrecerte los mejores servicios con profesionalismo y estilo.</p>
+
+            <div class="team-grid">
+                <!-- MIEMBRO 1 -->
+                <div class="team-member">
+                    <div class="member-image">
+                        <img src="assets/img/barber1.jpg" alt="Maestro Barbero">
+                    </div>
+                    <div class="member-content">
+                        <h3 class="member-name">Nombre</h3>
+                        <p class="member-role">Maestro Barbero</p>
+                        <p class="member-description">Especialista en cortes tradicionales y diseños personalizados con atención al detalle.</p>
+                        <p class="member-experience">+10 años de experiencia</p>
+                    </div>
+                </div>
+
+                <!-- MIEMBRO 2 -->
+                <div class="team-member">
+                    <div class="member-image">
+                        <img src="assets/img/barber2.jpg" alt="Maestro Barbero">
+                    </div>
+                    <div class="member-content">
+                        <h3 class="member-name">Nombre</h3>
+                        <p class="member-role">Maestro Barbero</p>
+                        <p class="member-description">Experto en técnicas modernas, diseños de barba y estilos contemporáneos.</p>
+                        <p class="member-experience">+8 años de experiencia</p>
+                    </div>
+                </div>
+
+                <!-- MIEMBRO 3 -->
+                <div class="team-member">
+                    <div class="member-image">
+                        <img src="assets/img/barber3.jpg" alt="Maestro Barbero">
+                    </div>
+                    <div class="member-content">
+                        <h3 class="member-name">Nombre</h3>
+                        <p class="member-role">Maestro Barbero</p>
+                        <p class="member-description">Especialista en perfilados precisos y acabados impecables para cada cliente.</p>
+                        <p class="member-experience">+6 años de experiencia</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+</body>
+</html>
