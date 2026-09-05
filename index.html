@@ -459,13 +459,15 @@
             }
 
             .hero-container {
-                height: auto;
-                flex-direction: column;
+                height: auto !important;
+                flex-direction: column !important;
+                display: flex !important;
             }
 
             .carousel-wrapper {
-                width: 100%;
-                height: 350px;
+                width: 100% !important;
+                height: 350px !important;
+                flex-shrink: 0 !important;
             }
 
             .welcome-section {
@@ -475,6 +477,7 @@
                 border-top: 1px solid rgba(212, 175, 119, 0.2) !important;
                 padding: 20px !important;
                 gap: 15px !important;
+                flex-shrink: 0 !important;
             }
 
             .welcome-image {
@@ -531,15 +534,15 @@
             }
 
             .hero-container {
-                height: auto;
-                flex-direction: column;
-                display: flex;
+                height: auto !important;
+                flex-direction: column !important;
+                display: flex !important;
             }
 
             .carousel-wrapper {
-                width: 100%;
-                height: 380px;
-                order: 1;
+                width: 100% !important;
+                height: 380px !important;
+                flex-shrink: 0 !important;
             }
 
             .welcome-section {
@@ -549,7 +552,7 @@
                 border-top: 1px solid rgba(212, 175, 119, 0.2) !important;
                 padding: 20px !important;
                 gap: 15px !important;
-                order: 2 !important;
+                flex-shrink: 0 !important;
             }
 
             .welcome-image {
