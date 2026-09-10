@@ -1,20 +1,17 @@
 // enviar-recordatorios
-// Revisa qué clientes ya deberían venir a cortarse el pelo (según su último
-// corte + frecuencia_dias) y les manda el mensaje de confirmación por
-// WhatsApp, abriendo su conversación en conversaciones_bot.
+// 1. Revisa RESERVAS PENDIENTES y envía confirmación
+//    - Si reserva es mañana → enviar hoy a las 09:00 AM
+//    - Si reserva es hoy → enviar 40 minutos antes
 //
-// Pensada para invocarse una vez al día vía un cron (pg_cron + pg_net). Por
-// ahora se invoca a mano para probar el flujo completo.
+// 2. Revisa clientes que deben venir (según último corte + frecuencia_dias)
+//    y les manda recordatorio por WhatsApp
 //
-// Protegida con un secret propio (CRON_SECRET) para que no cualquiera con la
-// URL pueda mandar WhatsApps reales a los clientes.
-//
-// TODO: hoy manda un solo recordatorio cuando la fecha estimada ya llegó.
-// El diseño original habla de 2 mensajes (unos días antes + el día anterior)
-// — falta agregar esa distinción cuando probemos que este flujo simple funciona.
+// Protegida con CRON_SECRET para evitar abuso.
+// Pensada para invocarse vía cron cada 5-10 minutos.
 
 import { createClient } from "npm:@supabase/supabase-js@2";
 import { enviarBotones, normalizarTelefono } from "../_shared/whatsapp.ts";
+import { calcularRecordatorio, esHoraDeEnviar } from "../_shared/calcular_recordatorio.ts";
 
 const CRON_SECRET = Deno.env.get("CRON_SECRET");
 const supabase = createClient(Deno.env.get("SUPABASE_URL")!, Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!);
@@ -32,7 +29,77 @@ Deno.serve(async (req) => {
   }
 
   const hoy = new Date().toISOString().slice(0, 10);
+  const enviados: string[] = [];
+  const resEnviadas: string[] = [];
 
+  // ==========================================
+  // PARTE 1: PROCESAR RESERVAS PENDIENTES
+  // ==========================================
+  const { data: reservasPendientes, error: errReservas } = await supabase
+    .from("reservas")
+    .select("id, fecha, hora_inicio, cliente_id, clientes(nombre, telefono), barberos(nombre), recordatorio_enviado")
+    .eq("estado", "pendiente")
+    .is("recordatorio_enviado", null)
+    .gte("fecha", hoy);
+
+  if (errReservas) {
+    console.error("Error cargando reservas:", errReservas);
+  } else if (reservasPendientes && reservasPendientes.length > 0) {
+    for (const reserva of reservasPendientes) {
+      try {
+        const cliente = reserva.clientes as any;
+        const barbero = reserva.barberos as any;
+
+        if (!cliente?.telefono) continue;
+
+        // Calcular cuándo enviar recordatorio
+        const resultado = calcularRecordatorio(
+          reserva.fecha,
+          reserva.hora_inicio
+        );
+
+        // Verificar si es hora de enviar
+        if (!resultado.debe_enviar || !esHoraDeEnviar(resultado.momento_envio)) {
+          continue;
+        }
+
+        const telefono = normalizarTelefono(cliente.telefono);
+
+        // Enviar mensaje de confirmación
+        const mensaje = `Hola ${cliente.nombre} 👋\n\n¿Confirmas tu reserva para el ${reserva.fecha} a las ${reserva.hora_inicio} con ${barbero?.nombre || "barbero"}?\n\nResponde SÍ o NO.`;
+
+        const { ok } = await enviarBotones(telefono, mensaje, [
+          { id: "confirmar_si", titulo: "Sí" },
+          { id: "confirmar_no", titulo: "No" },
+        ]);
+
+        if (ok) {
+          // Marcar que se envió el recordatorio
+          await supabase
+            .from("reservas")
+            .update({ recordatorio_enviado: new Date().toISOString() })
+            .eq("id", reserva.id);
+
+          // Iniciar conversación en el bot
+          await supabase.from("conversaciones_bot").upsert({
+            telefono,
+            cliente_id: reserva.cliente_id,
+            estado: "esperando_confirmacion",
+            contexto: { reserva_id: reserva.id, tipo: "confirmacion_reserva" },
+            actualizado_at: new Date().toISOString(),
+          });
+
+          resEnviadas.push(`${cliente.nombre} (${telefono})`);
+        }
+      } catch (err) {
+        console.error("Error procesando reserva:", err);
+      }
+    }
+  }
+
+  // ==========================================
+  // PARTE 2: PROCESAR RECORDATORIOS POR FRECUENCIA (original)
+  // ==========================================
   const { data: clientes, error } = await supabase
     .from("clientes")
     .select("id, nombre, telefono, frecuencia_dias, proximo_recordatorio")
@@ -44,8 +111,6 @@ Deno.serve(async (req) => {
       headers: { "Content-Type": "application/json" },
     });
   }
-
-  const enviados: string[] = [];
 
   for (const cliente of clientes || []) {
     if (cliente.proximo_recordatorio && cliente.proximo_recordatorio > hoy) continue;
@@ -90,7 +155,10 @@ Deno.serve(async (req) => {
     enviados.push(telefono);
   }
 
-  return new Response(JSON.stringify({ recordatorios_enviados: enviados }), {
+  return new Response(JSON.stringify({
+    recordatorios_enviados: enviados,
+    confirmaciones_enviadas: resEnviadas
+  }), {
     status: 200,
     headers: { "Content-Type": "application/json" },
   });
