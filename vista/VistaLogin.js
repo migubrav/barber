@@ -23,10 +23,11 @@ class VistaLogin {
 
   /**
    * Verifica si existe una sesión válida
+   * Usa sessionStorage: se elimina al cerrar navegador
    */
   verificarSesion() {
-    const token = localStorage.getItem('admin_token');
-    const usuario = localStorage.getItem('admin_usuario');
+    const token = sessionStorage.getItem('admin_token');
+    const usuario = sessionStorage.getItem('admin_usuario');
     return token && usuario;
   }
 
@@ -83,11 +84,11 @@ class VistaLogin {
       // Generar token JWT simple (en producción usar librería jwt)
       const token = this.generarToken(usuariosData.id, usuario, tipoUsuario);
 
-      // Guardar sesión en localStorage
-      localStorage.setItem('admin_token', token);
-      localStorage.setItem('admin_usuario', usuario);
-      localStorage.setItem('admin_tipo', tipoUsuario);
-      localStorage.setItem('admin_id', usuariosData.id);
+      // Guardar sesión en sessionStorage (se elimina al cerrar navegador)
+      sessionStorage.setItem('admin_token', token);
+      sessionStorage.setItem('admin_usuario', usuario);
+      sessionStorage.setItem('admin_tipo', tipoUsuario);
+      sessionStorage.setItem('admin_id', usuariosData.id);
 
       // Actualizar último login en BD
       await this.db.db
@@ -150,10 +151,10 @@ class VistaLogin {
    * Logout - limpiar sesión
    */
   static logout() {
-    localStorage.removeItem('admin_token');
-    localStorage.removeItem('admin_usuario');
-    localStorage.removeItem('admin_tipo');
-    localStorage.removeItem('admin_id');
+    sessionStorage.removeItem('admin_token');
+    sessionStorage.removeItem('admin_usuario');
+    sessionStorage.removeItem('admin_tipo');
+    sessionStorage.removeItem('admin_id');
     window.location.href = 'login.html';
   }
 
@@ -162,10 +163,10 @@ class VistaLogin {
    */
   static obtenerUsuarioActual() {
     return {
-      token: localStorage.getItem('admin_token'),
-      usuario: localStorage.getItem('admin_usuario'),
-      tipo: localStorage.getItem('admin_tipo'),
-      id: localStorage.getItem('admin_id')
+      token: sessionStorage.getItem('admin_token'),
+      usuario: sessionStorage.getItem('admin_usuario'),
+      tipo: sessionStorage.getItem('admin_tipo'),
+      id: sessionStorage.getItem('admin_id')
     };
   }
 }
