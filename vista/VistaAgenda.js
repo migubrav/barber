@@ -40,23 +40,36 @@ class VistaAgenda {
   async cargar() {
     const hoy = this.hoyISO();
 
-    const [{ data: reservas, error: errReservas }, { data: cola, error: errCola }] = await Promise.all([
-      this.conexionDB.db
-        .from("reservas")
-        .select("id, hora_inicio, hora_fin, estado, cliente_id, clientes(nombre), barberos(nombre)")
-        .eq("fecha", hoy)
-        .in("estado", ["confirmada", "en_tolerancia"])
-        .order("hora_inicio"),
-      this.conexionDB.db
-        .from("cola_espera")
-        .select("id, nombre_walk_in, estado, hora_entrada, cliente_id, clientes(nombre), barberos(nombre)")
-        .in("estado", ["esperando", "en_corte"])
-        .order("hora_entrada"),
-    ]);
+    // Cargar reservas sin relaciones (más confiable)
+    const { data: reservas, error: errReservas } = await this.conexionDB.db
+      .from("reservas")
+      .select("*")
+      .eq("fecha", hoy)
+      .in("estado", ["pendiente", "confirmada", "en_tolerancia"])
+      .order("hora_inicio");
 
-    const error = errReservas || errCola;
-    if (error) {
-      this.contenedor.innerHTML = `<div class="empty">Error cargando agenda: ${error.message}</div>`;
+    // Cargar clientes y barberos por separado
+    const { data: clientes } = await this.conexionDB.db.from("clientes").select("id, nombre");
+    const { data: barberos } = await this.conexionDB.db.from("barberos").select("id, nombre");
+    const { data: cola, error: errCola } = await this.conexionDB.db
+      .from("cola_espera")
+      .select("*")
+      .in("estado", ["esperando", "en_corte"])
+      .order("hora_entrada");
+
+    // Enriquecer reservas con datos de clientes y barberos
+    if (reservas) {
+      const clienteMap = Object.fromEntries(clientes?.map(c => [c.id, c]) || []);
+      const barberoMap = Object.fromEntries(barberos?.map(b => [b.id, b]) || []);
+
+      reservas.forEach(r => {
+        r.clientes = clienteMap[r.cliente_id] || null;
+        r.barberos = barberoMap[r.barbero_id] || null;
+      });
+    }
+
+    if (errReservas || errCola) {
+      this.contenedor.innerHTML = `<div class="empty">Error cargando agenda: ${(errReservas || errCola).message}</div>`;
       return;
     }
 
@@ -89,9 +102,19 @@ class VistaAgenda {
       const tolerancia = this.vistaConfig?.configuracion?.tolerancia_min || 10;
       const finTolerancia = new Date(item.momento.getTime() + tolerancia * 60000);
       const enTolerancia = ahora > item.momento && ahora <= finTolerancia;
-      const badge = enTolerancia
-        ? `<span class="badge tolerancia">⏳ Tolerancia</span>`
-        : `<span class="badge confirmada">Confirmada</span>`;
+
+      // Determinar badge según estado
+      let badge = "";
+      if (r.estado === "pendiente") {
+        badge = `<span class="badge pendiente" style="background: #f97316; color: white;">🟠 Pendiente</span>`;
+      } else if (enTolerancia) {
+        badge = `<span class="badge tolerancia">⏳ Tolerancia</span>`;
+      } else if (r.estado === "confirmada") {
+        badge = `<span class="badge confirmada" style="background: #22c55e; color: white;">✅ Confirmada</span>`;
+      } else {
+        badge = `<span class="badge" style="background: #6b7280; color: white;">${r.estado}</span>`;
+      }
+
       return `
         <div class="slot" style="padding:9px 0; border-bottom:1px solid var(--line);">
           <div class="time">${this.fmtHora(r.hora_inicio)}</div>
