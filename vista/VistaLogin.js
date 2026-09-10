@@ -10,7 +10,10 @@ class VistaLogin {
     this.btnLogin = document.getElementById('btnLogin');
     this.alertContainer = document.getElementById('alertContainer');
 
-    this.formulario.addEventListener('submit', (e) => this.manejarLogin(e));
+    // Solo agregar event listener si el formulario existe (estamos en login.html)
+    if (this.formulario) {
+      this.formulario.addEventListener('submit', (e) => this.manejarLogin(e));
+    }
 
     // Si ya está autenticado, redirige a panel
     if (this.verificarSesion()) {
@@ -167,8 +170,10 @@ class VistaLogin {
   }
 }
 
-// Inicializar cuando se cargue el DOM
+// Inicializar cuando se cargue el DOM (solo si estamos en login.html)
 document.addEventListener('DOMContentLoaded', () => {
-  const conexionDB = ConexionDB.obtenerInstancia();
-  new VistaLogin(conexionDB);
+  if (document.getElementById('loginForm')) {
+    const conexionDB = ConexionDB.obtenerInstancia();
+    new VistaLogin(conexionDB);
+  }
 });
