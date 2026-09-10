@@ -72,7 +72,7 @@ class VistaRegistro {
           <td style="padding: 10px; text-align: center; color: var(--gold);">${frecuencia}</td>
           <td style="padding: 10px; text-align: center; font-size: 12px; color: var(--muted);">${fechaRegistro}</td>
           <td style="padding: 10px; text-align: center;">
-            <button class="btn-accion" onclick="vistaRegistro.eliminarCliente('${cliente.id}', '${cliente.nombre}')" style="padding: 6px 12px; background: #ef4444; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 12px;">Eliminar</button>
+            <button class="btn-accion" onclick="vistaRegistro.editarCliente('${cliente.id}', '${cliente.nombre}', '${cliente.telefono}')" style="padding: 6px 12px; background: var(--gold); color: #1a1410; border: none; border-radius: 4px; cursor: pointer; font-size: 12px; font-weight: 600;">Modificar</button>
           </td>
         </tr>
       `;
@@ -89,24 +89,48 @@ class VistaRegistro {
     contenedor.innerHTML = html;
   }
 
-  /** Elimina un cliente de la BD */
-  async eliminarCliente(clienteId, nombreCliente) {
-    if (!confirm(`¿Eliminar a ${nombreCliente}? Esta acción no se puede deshacer.`)) {
+  /** Permite editar el número de WhatsApp de un cliente */
+  async editarCliente(clienteId, nombreCliente, telefonoActual) {
+    // Crear modal simple para editar
+    const nuevoTelefono = prompt(
+      `Modificar WhatsApp de ${nombreCliente}\n\nTeléfono actual: ${telefonoActual}`,
+      telefonoActual
+    );
+
+    // Si el usuario cancela
+    if (nuevoTelefono === null) {
+      return;
+    }
+
+    // Si no cambió nada
+    if (nuevoTelefono.trim() === telefonoActual) {
+      mostrarToast("Sin cambios");
+      return;
+    }
+
+    // Validar que no esté vacío
+    if (nuevoTelefono.trim() === "") {
+      mostrarToast("El teléfono no puede estar vacío");
       return;
     }
 
     try {
+      // Actualizar en la BD
       const { error } = await this.conexionDB.db
         .from("clientes")
-        .delete()
+        .update({ telefono: nuevoTelefono.trim() })
         .eq("id", clienteId);
 
       if (error) {
-        mostrarToast("Error al eliminar: " + error.message);
+        if (error.message.includes("duplicate")) {
+          mostrarToast("Este número ya está registrado");
+        } else {
+          mostrarToast("Error al actualizar: " + error.message);
+        }
         return;
       }
 
-      mostrarToast(`${nombreCliente} eliminado ✓`);
+      mostrarToast(`${nombreCliente} actualizado ✓`);
       this.cargarClientes(); // Recargar lista
     } catch (error) {
       mostrarToast("Error: " + error.message);
