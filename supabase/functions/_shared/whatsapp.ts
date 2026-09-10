@@ -16,8 +16,10 @@ const WHATSAPP_PHONE_ID = Deno.env.get("WHATSAPP_PHONE_ID");
  * con WhatsApp para que las búsquedas por teléfono siempre coincidan.
  */
 export function normalizarTelefono(telefono: string): string {
-  return telefono.replace(/\D/g, "");
+  const solo_numeros = telefono.replace(/\D/g, "");
+  return `+${solo_numeros}`;
 }
+
 
 async function llamarGraphAPI(payload: Record<string, unknown>) {
   const respuesta = await fetch(`https://graph.facebook.com/v25.0/${WHATSAPP_PHONE_ID}/messages`, {
