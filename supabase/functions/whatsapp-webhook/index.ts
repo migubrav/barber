@@ -88,6 +88,22 @@ async function actualizarConversacion(telefono: string, cambios: Record<string, 
 
 // ---------- esperando_confirmacion ----------
 async function manejarConfirmacion(telefono: string, respuesta: string) {
+  // Obtener conversación para verificar si es confirmación de reserva
+  const { data: conversacion } = await supabase
+    .from("conversaciones_bot")
+    .select("contexto")
+    .eq("telefono", telefono)
+    .maybeSingle();
+
+  const contexto = conversacion?.contexto || {};
+  const esReserva = contexto.tipo === "confirmacion_reserva" && contexto.reserva_id;
+
+  // CASO 1: Confirmación de RESERVA PENDIENTE
+  if (esReserva) {
+    return manejarConfirmacionReserva(telefono, respuesta, contexto.reserva_id);
+  }
+
+  // CASO 2: Recordatorio genérico (¿vienes esta semana?)
   if (respuesta === "confirmar_si") {
     await actualizarConversacion(telefono, { estado: "agendando", contexto: { paso: "esperando_barbero" } });
     return iniciarAgendamiento(telefono);
@@ -103,6 +119,61 @@ async function manejarConfirmacion(telefono: string, respuesta: string) {
     { id: "confirmar_si", titulo: "Sí" },
     { id: "confirmar_no", titulo: "No" },
   ]);
+}
+
+// ---------- confirmacion_reserva (NUEVO) ----------
+async function manejarConfirmacionReserva(telefono: string, respuesta: string, reservaId: string) {
+  const { data: reserva } = await supabase
+    .from("reservas")
+    .select("id, estado, fecha, hora_inicio, cliente_id, clientes(nombre), barberos(nombre)")
+    .eq("id", reservaId)
+    .maybeSingle();
+
+  if (!reserva) {
+    await actualizarConversacion(telefono, { estado: "inicial", contexto: {} });
+    return enviarTexto(telefono, "No encontré tu reserva. Por favor contacta directamente al local 🙏");
+  }
+
+  const cliente = reserva.clientes as any;
+  const barbero = reserva.barberos as any;
+
+  if (respuesta === "confirmar_si") {
+    // CLIENTE CONFIRMÓ: actualizar reserva a "confirmada"
+    await supabase
+      .from("reservas")
+      .update({ estado: "confirmada" })
+      .eq("id", reserva.id);
+
+    await actualizarConversacion(telefono, { estado: "inicial", contexto: {} });
+    return enviarTexto(
+      telefono,
+      `✅ ¡Reserva confirmada!\n\nTe esperamos el ${reserva.fecha} a las ${reserva.hora_inicio} con ${barbero?.nombre || "tu barbero"}.\n\nSi no puedes venir, avísanos 🙏`
+    );
+  }
+
+  if (respuesta === "confirmar_no") {
+    // CLIENTE CANCELÓ: cambiar a "cancelada"
+    await supabase
+      .from("reservas")
+      .update({ estado: "cancelada" })
+      .eq("id", reserva.id);
+
+    await actualizarConversacion(telefono, { estado: "initial", contexto: {} });
+    return enviarTexto(
+      telefono,
+      `Entendido. Tu reserva ha sido cancelada.\n\n¿Cuando quieras venir nuevamente, agendate! 🙏`
+    );
+  }
+
+  // Reintentar
+  return enviarBotones(
+    telefono,
+    `${cliente?.nombre}, necesitamos tu confirmación para el ${reserva.fecha} a las ${reserva.hora_inicio}.\n\n¿Confirmas tu reserva?`,
+    [
+      { id: "confirmar_si", titulo: "Sí" },
+      { id: "confirmar_no", titulo: "No" },
+    ]
+  );
 }
 
 // ---------- esperando_postergar ----------
