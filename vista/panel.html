@@ -10,6 +10,18 @@
 </head>
 <body>
 
+<!-- PROTECCIÓN: Verificar sesión antes de mostrar contenido -->
+<script>
+  (function() {
+    const token = localStorage.getItem('admin_token');
+    const usuario = localStorage.getItem('admin_usuario');
+
+    if (!token || !usuario) {
+      window.location.href = 'login.html';
+    }
+  })();
+</script>
+
 <header>
   <div class="brand">
     <div class="pole"></div>
@@ -17,6 +29,10 @@
       <h1>Panel del barbero</h1>
       <div class="sub" id="fecha-hoy">—</div>
     </div>
+  </div>
+  <div style="display: flex; align-items: center; gap: 15px;">
+    <span id="usuario-actual" style="font-size: 14px; color: #D4AF77;"></span>
+    <button onclick="VistaLogin.logout()" style="padding: 8px 16px; background: #ef4444; border: none; border-radius: 4px; color: white; cursor: pointer; font-size: 12px; font-weight: 600; text-transform: uppercase;">Salir</button>
   </div>
 </header>
 
@@ -139,10 +155,20 @@
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 <script src="../conexion_db.js"></script>
+<script src="VistaLogin.js"></script>
 <script src="VistaAgenda.js"></script>
 <script src="VistaConfig.js"></script>
 <script src="VistaBarberos.js"></script>
 <script src="VistaRegistro.js"></script>
 <script src="../app.js"></script>
+<script>
+  // Mostrar usuario actual en el header
+  document.addEventListener('DOMContentLoaded', () => {
+    const usuarioActual = VistaLogin.obtenerUsuarioActual();
+    if (usuarioActual.usuario) {
+      document.getElementById('usuario-actual').textContent = `👤 ${usuarioActual.usuario}`;
+    }
+  });
+</script>
 </body>
 </html>
