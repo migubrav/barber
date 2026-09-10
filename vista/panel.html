@@ -13,8 +13,8 @@
 <!-- PROTECCIÓN: Verificar sesión antes de mostrar contenido -->
 <script>
   (function() {
-    const token = localStorage.getItem('admin_token');
-    const usuario = localStorage.getItem('admin_usuario');
+    const token = sessionStorage.getItem('admin_token');
+    const usuario = sessionStorage.getItem('admin_usuario');
 
     if (!token || !usuario) {
       window.location.href = 'login.html';
