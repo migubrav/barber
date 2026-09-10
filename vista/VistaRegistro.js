@@ -16,6 +16,103 @@ class VistaRegistro {
     contenedor.textContent = url;
   }
 
+  /** Carga y muestra todos los clientes registrados */
+  async cargarClientes() {
+    const contenedor = document.getElementById("lista-clientes");
+    if (!contenedor) return;
+
+    contenedor.innerHTML = "<div class='empty'>Cargando clientes…</div>";
+
+    try {
+      const { data: clientes, error } = await this.conexionDB.db
+        .from("clientes")
+        .select("id, nombre, telefono, frecuencia_dias, fecha_registro")
+        .order("fecha_registro", { ascending: false });
+
+      if (error) {
+        contenedor.innerHTML = `<div class='empty'>Error: ${error.message}</div>`;
+        return;
+      }
+
+      if (!clientes || clientes.length === 0) {
+        contenedor.innerHTML = "<div class='empty'>No hay clientes registrados aún</div>";
+        return;
+      }
+
+      this.mostrarListaClientes(clientes, contenedor);
+    } catch (error) {
+      contenedor.innerHTML = `<div class='empty'>Error: ${error.message}</div>`;
+    }
+  }
+
+  /** Renderiza la tabla de clientes */
+  mostrarListaClientes(clientes, contenedor) {
+    let html = `
+      <table style="width: 100%; border-collapse: collapse; font-size: 14px;">
+        <thead>
+          <tr style="background: var(--dark); border-bottom: 2px solid var(--gold);">
+            <th style="padding: 10px; text-align: left;">Nombre</th>
+            <th style="padding: 10px; text-align: left;">WhatsApp</th>
+            <th style="padding: 10px; text-align: center;">Frecuencia</th>
+            <th style="padding: 10px; text-align: center;">Registrado</th>
+            <th style="padding: 10px; text-align: center;">Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+    `;
+
+    clientes.forEach((cliente) => {
+      const fechaRegistro = new Date(cliente.fecha_registro).toLocaleDateString("es-CL");
+      const frecuencia = `Cada ${cliente.frecuencia_dias} días`;
+
+      html += `
+        <tr style="border-bottom: 1px solid rgba(212, 175, 119, 0.2); hover: background: rgba(212, 175, 119, 0.05);">
+          <td style="padding: 10px;"><strong>${cliente.nombre}</strong></td>
+          <td style="padding: 10px;">${cliente.telefono}</td>
+          <td style="padding: 10px; text-align: center; color: var(--gold);">${frecuencia}</td>
+          <td style="padding: 10px; text-align: center; font-size: 12px; color: var(--muted);">${fechaRegistro}</td>
+          <td style="padding: 10px; text-align: center;">
+            <button class="btn-accion" onclick="vistaRegistro.eliminarCliente('${cliente.id}', '${cliente.nombre}')" style="padding: 6px 12px; background: #ef4444; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 12px;">Eliminar</button>
+          </td>
+        </tr>
+      `;
+    });
+
+    html += `
+        </tbody>
+      </table>
+      <div style="margin-top: 15px; font-size: 12px; color: var(--muted);">
+        Total: <strong>${clientes.length}</strong> cliente(s) registrado(s)
+      </div>
+    `;
+
+    contenedor.innerHTML = html;
+  }
+
+  /** Elimina un cliente de la BD */
+  async eliminarCliente(clienteId, nombreCliente) {
+    if (!confirm(`¿Eliminar a ${nombreCliente}? Esta acción no se puede deshacer.`)) {
+      return;
+    }
+
+    try {
+      const { error } = await this.conexionDB.db
+        .from("clientes")
+        .delete()
+        .eq("id", clienteId);
+
+      if (error) {
+        mostrarToast("Error al eliminar: " + error.message);
+        return;
+      }
+
+      mostrarToast(`${nombreCliente} eliminado ✓`);
+      this.cargarClientes(); // Recargar lista
+    } catch (error) {
+      mostrarToast("Error: " + error.message);
+    }
+  }
+
   /** Usado en el panel: prepara el formulario para cargar varios clientes de prueba */
   inicializarFormularioMultiple() {
     this.contenedorFilas = document.getElementById("filas-registro");
